@@ -1,5 +1,4 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
 // Routes essential for the setup process (accessible when no admin exists)
 const setupRoutes = [
@@ -23,11 +22,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Construct the absolute URL for the fetch request to the internal API
-  const checkAdminUrl = new URL('/api/system', request.url); // Corrected path
-
   let adminExists: boolean | null = null;
   try {
+    // Determine the base URL for the internal API fetch call
+    let currentInternalApiBase: string;
+    if (process.env.NODE_ENV === 'production') {
+        // In production, always use localhost and PORT (or default 3000)
+        currentInternalApiBase = `http://localhost:${process.env.PORT || 3000}`;
+    } else {
+        // In development, use localhost and the port from the incoming request or PORT or default 3000
+        currentInternalApiBase = `http://localhost:${request.nextUrl.port || process.env.PORT || 3000}`;
+    }
+
+    const checkAdminUrl = new URL('/api/system', currentInternalApiBase);
+    console.log(`Middleware: Attempting to fetch admin status from: ${checkAdminUrl.toString()}`); // Log the URL
+
     const response = await fetch(checkAdminUrl.toString(), {
       headers: {},
     });
@@ -69,6 +78,8 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = '/setup';
     url.search = '';
+    url.protocol = request.nextUrl.protocol; // Ensure consistent protocol for redirect
+    url.host = request.nextUrl.host;         // Ensure consistent host for redirect
     return NextResponse.redirect(url);
   } else {
     // If admin exists, and user tries to access a setup route (EXCEPT our internal API check)
@@ -76,6 +87,8 @@ export async function middleware(request: NextRequest) {
       const url = request.nextUrl.clone();
       url.pathname = '/';
       url.search = '';
+      url.protocol = request.nextUrl.protocol;
+      url.host = request.nextUrl.host;
       return NextResponse.redirect(url);
     }
 
@@ -90,6 +103,8 @@ export async function middleware(request: NextRequest) {
       if (!pathname.startsWith('/login') && !pathname.startsWith('/api/auth/')) {
           url.search = `?redirect=${encodeURIComponent(pathname + request.nextUrl.search)}`;
       }
+      url.protocol = request.nextUrl.protocol;
+      url.host = request.nextUrl.host;
       return NextResponse.redirect(url);
     }
 
