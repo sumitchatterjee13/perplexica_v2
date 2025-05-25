@@ -3,15 +3,9 @@ import db from '@/lib/db';
 import { users } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 
-export const dynamic = 'force-dynamic'; // Ensures the route is not statically cached
+export const dynamic = 'force-dynamic'; // Ensures the route is not cached
 
-export async function GET(request: Request) {
-  // Optional: Add a secret header check for basic security if this endpoint should be internal-only
-  // const internalApiSecret = process.env.INTERNAL_API_SECRET;
-  // if (request.headers.get('X-Internal-Secret') !== internalApiSecret) {
-  //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  // }
-
+export async function GET() {
   try {
     const adminUsers = await db.select({ id: users.id }).from(users).where(eq(users.role, 'admin')).limit(1);
     const adminExists = adminUsers.length > 0;

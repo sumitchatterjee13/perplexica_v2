@@ -39,6 +39,7 @@ export async function middleware(request: NextRequest) {
 
     const response = await fetch(checkAdminUrl.toString(), {
       headers: {},
+      cache: 'no-store', // Ensure fresh data for this critical check
     });
 
     if (!response.ok) {
