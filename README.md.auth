@@ -1,0 +1,60 @@
+# Authentication System for Perplexica
+
+I've implemented a complete user management system for your Perplexica application with the following features:
+
+- Login page with session-based authentication
+- Admin dashboard for user management
+- Role-based access control (admin and regular users)
+- Password hashing for security
+- Session management with cookies
+
+## Setup Instructions
+
+1. **Build and start the application:**
+   ```bash
+   npm run build
+   npm run start
+   ```
+
+2. **Create an admin user:**
+   ```bash
+   npm run create-admin
+   ```
+   This will create an admin user with the following credentials:
+   - Username: `admin`
+   - Password: `Perplexica@2025`
+
+3. **Access the login page:**
+   Open your browser and go to http://localhost:3000/login
+
+4. **Access the admin dashboard:**
+   After logging in, go to http://localhost:3000/admin to manage users
+
+## Admin Dashboard Features
+
+- View all users
+- Add new users
+- Edit existing users
+- Delete users
+- Set user roles (admin or regular user)
+
+## Security Considerations
+
+- Passwords are hashed using bcrypt
+- Authentication is required for all non-public routes
+- JWT tokens are used for secure session handling
+- Admin permissions are required for user management
+
+## API Endpoints
+
+- `/api/auth/login` - Login and create session
+- `/api/auth/logout` - Logout and destroy session
+- `/api/auth/me` - Get current user information
+- `/api/users` - List and create users (admin only)
+- `/api/users/[id]` - Get, update, and delete individual users (admin only)
+
+## Notes
+
+- Only admins can create new users - there is no public signup
+- Only admins can access the user management dashboard
+- All application routes are protected and require authentication
