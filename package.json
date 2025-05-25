@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "format:write": "prettier . --write",
-    "db:push": "drizzle-kit up:sqlite",
+    "db:push": "drizzle-kit push",
     "create-admin": "node scripts/create-admin.js",
     "run-migration": "node scripts/run-migration.js"
   },
