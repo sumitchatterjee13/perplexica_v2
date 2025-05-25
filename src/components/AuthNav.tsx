@@ -41,6 +41,8 @@ export default function AuthNav() {
       });
 
       if (res.ok) {
+        setUser(null); // Clear the user state
+        setShowDropdown(false); // Hide the dropdown
         router.push('/login');
       }
     } catch (error) {
